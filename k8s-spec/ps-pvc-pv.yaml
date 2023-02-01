@@ -1,0 +1,64 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume-post  # Sets PV's name
+  namespace: k8s-post-service
+  labels:
+    type: local  # Sets PV's type to local
+    app: postgres-post
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi # Sets PV Volume
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data/post"
+---
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv-volume-user  # Sets PV's name
+  namespace: k8s-post-service
+  labels:
+    type: local  # Sets PV's type to local
+    app: postgres-user
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi # Sets PV Volume
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data/user"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim-post  # Sets name of PVC
+  namespace: k8s-post-service
+  labels:
+    app: postgres-post
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany  # Sets read and write access
+  resources:
+    requests:
+      storage: 1Gi  # Sets volume size
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim-user  # Sets name of PVC
+  namespace: k8s-post-service
+  labels:
+    app: postgres-user
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany  # Sets read and write access
+  resources:
+    requests:
+      storage: 1Gi  # Sets volume size

@@ -1,0 +1,7 @@
+1. kubectl apply -f ps-config-map-post.yaml --- kubectl apply -f ps-config-map-user.yaml
+ --- kubectl get configmap ---> kubectl apply -f ps-pvc-pv.yaml ---> kubectl get pvc
+2. kubectl apply -f ps-deployment.yaml ---> kubectl get deployments -n=k8s-post-service
+3. kubectl apply -f ps-service.yaml
+4. kubectl get all -n=k8s-post-service
+5. kubectl exec -it -n=k8s-post-service postgres-dpl-post-7b8d49c5d7-5f65g  -- psql -h localhost -U root --password -p 5432 post-service-db
+6. kubectl apply -f app-deployment.yaml ---> kubectl logs post-service-app-98f88944d-45qqd -n=k8s-post-service

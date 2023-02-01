@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-dpl-post  # Sets Deployment name
+  namespace: k8s-post-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres-post
+  template:
+    metadata:
+      labels:
+        app: postgres-post
+    spec:
+      containers:
+        - name: postgres-post
+          image: postgres:15.1 # Sets Image
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5439  # Exposes container port
+          envFrom:
+            - configMapRef:
+                name: postgres-config-post
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/post/data
+              name: postgredb-post
+      volumes:
+        - name: postgredb-post
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim-post
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-dpl-user  # Sets Deployment name
+  namespace: k8s-post-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: postgres-user
+  template:
+    metadata:
+      labels:
+        app: postgres-user
+    spec:
+      containers:
+        - name: postgres-user
+          image: postgres:15.1 # Sets Image
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5438  # Exposes container port
+          envFrom:
+            - configMapRef:
+                name: postgres-config-user
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/user/data
+              name: postgredb-user
+      volumes:
+        - name: postgredb-user
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim-user

@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service-post # Sets service name
+  namespace: k8s-post-service
+  labels:
+    app: postgres-post # Labels and Selectors
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: "TCP"
+      port: 5439 # Sets port to run the postgres application
+      targetPort: 5439
+  selector:
+    run: postgres-post
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service-user # Sets service name
+  namespace: k8s-post-service
+  labels:
+    app: postgres-user # Labels and Selectors
+spec:
+  type: LoadBalancer
+  ports:
+    - protocol: "TCP"
+      port: 5438 # Sets port to run the postgres application
+      targetPort: 5438
+  selector:
+    run: postgres-user
+
+---
+#
+#apiVersion: v1
+#kind: Endpoints
+#metadata:
+#  name: postgres-service-post
+#  namespace: k8s-post-service
+#subsets:
+#  - addresses:
+#      - ip: 10.10.1.1
+#    ports:
+#      - port: 5439
+#        name: postgres-service-post
+#
+#---
+#
+#apiVersion: v1
+#kind: Endpoints
+#metadata:
+#  name: postgres-service-user
+#  namespace: k8s-post-service
+#subsets:
+#  - addresses:
+#      - ip: 10.10.1.2
+#    ports:
+#      - port: 5438
+#        name: postgres-service-user
+

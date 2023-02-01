@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config-user
+  namespace: k8s-post-service
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: user-service-db
+  POSTGRES_USER: root
+  POSTGRES_PASSWORD: root
