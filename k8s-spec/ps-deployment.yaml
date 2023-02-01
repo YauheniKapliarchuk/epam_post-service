@@ -4,31 +4,36 @@ metadata:
   name: postgres-dpl-post  # Sets Deployment name
   namespace: k8s-post-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: postgres-post
+      app: postgres-post-db-pod
   template:
     metadata:
       labels:
-        app: postgres-post
+        app: postgres-post-db-pod
     spec:
       containers:
-        - name: postgres-post
+        - name: postgres-post-db
           image: postgres:15.1 # Sets Image
           imagePullPolicy: "IfNotPresent"
           ports:
-            - containerPort: 5439  # Exposes container port
+            - containerPort: 5432  # Exposes container port
           envFrom:
             - configMapRef:
                 name: postgres-config-post
           volumeMounts:
             - mountPath: /var/lib/postgresql/post/data
               name: postgredb-post
+            - mountPath: /docker-entrypoint-initdb.d
+              name: postgresql-initdb
       volumes:
         - name: postgredb-post
           persistentVolumeClaim:
             claimName: postgres-pv-claim-post
+        - name: postgresql-initdb
+            configMap:
+            name: postgres-config-post
 
 ---
 
@@ -38,28 +43,33 @@ metadata:
   name: postgres-dpl-user  # Sets Deployment name
   namespace: k8s-post-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: postgres-user
+      app: postgres-user-db-pod
   template:
     metadata:
       labels:
-        app: postgres-user
+        app: postgres-user-db-pod
     spec:
       containers:
-        - name: postgres-user
+        - name: postgres-user-db-pod
           image: postgres:15.1 # Sets Image
           imagePullPolicy: "IfNotPresent"
           ports:
-            - containerPort: 5438  # Exposes container port
+            - containerPort: 5432  # Exposes container port
           envFrom:
-            - configMapRef:
-                name: postgres-config-user
+            - secretKeyRef:
+                name: secrets-dev
           volumeMounts:
             - mountPath: /var/lib/postgresql/user/data
               name: postgredb-user
+            - mountPath: /docker-entrypoint-initdb.d
+              name: postgresql-initdb
       volumes:
         - name: postgredb-user
           persistentVolumeClaim:
             claimName: postgres-pv-claim-user
+        - name: postgresql-initdb
+            configMap:
+            name: postgres-config-user

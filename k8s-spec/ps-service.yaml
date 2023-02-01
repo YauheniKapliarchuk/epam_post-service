@@ -4,15 +4,16 @@ metadata:
   name: postgres-service-post # Sets service name
   namespace: k8s-post-service
   labels:
-    app: postgres-post # Labels and Selectors
+    app: postgres-post-svc # Labels and Selectors
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - protocol: "TCP"
-      port: 5439 # Sets port to run the postgres application
-      targetPort: 5439
+      port: 5432 # Sets port to run the postgres application
+      targetPort: 5432
+      nodePort: 32128
   selector:
-    run: postgres-post
+    app: postgres-post-db-pod
 
 ---
 
@@ -22,15 +23,16 @@ metadata:
   name: postgres-service-user # Sets service name
   namespace: k8s-post-service
   labels:
-    app: postgres-user # Labels and Selectors
+    app: postgres-user-svc # Labels and Selectors
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - protocol: "TCP"
-      port: 5438 # Sets port to run the postgres application
-      targetPort: 5438
+      port: 5432 # Sets port to run the postgres application
+      targetPort: 5432
+      nodePort: 32129
   selector:
-    run: postgres-user
+    app: postgres-user-db-pod
 
 ---
 #

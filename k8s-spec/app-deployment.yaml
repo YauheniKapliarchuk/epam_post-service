@@ -17,7 +17,7 @@ spec:
         - image: evgkapl/user-service:1.0.0
           name: user-service-app
           ports:
-            - containerPort: 8081
+            - containerPort: 8080
           env:
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
@@ -25,7 +25,7 @@ spec:
                   name: postgres-config-user           # The ConfigMap this value comes from.
                   key: POSTGRES_PASSWORD
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres-service-user:5438/user-service-db?useSSL=false
+              value: jdbc:postgresql://postgres-service-user:5432/user-service-db?useSSL=false
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 configMapKeyRef:
@@ -63,7 +63,7 @@ spec:
                   name: postgres-config-post           # The ConfigMap this value comes from.
                   key: POSTGRES_PASSWORD
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres-service-post:5439/post-service-db?useSSL=false
+              value: jdbc:postgresql://postgres-service-post:5432/post-service-db?useSSL=false
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 configMapKeyRef:
@@ -71,3 +71,7 @@ spec:
                   key: POSTGRES_USER
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               value: update
+            - name: USER_SERVICE_HOST_URL
+              value: http://user-app-service:8080/
+
+---

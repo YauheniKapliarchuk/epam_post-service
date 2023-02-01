@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-map
+  namespace: k8s-post-service
+  labels:
+    app: postgres
+data:
+  USER_SERVICE_HOST_URL: post-service-db
