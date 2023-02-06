@@ -7,5 +7,4 @@ metadata:
     app: postgres
 data:
   POSTGRES_DB: post-service-db
-  POSTGRES_USER: root
-  POSTGRES_PASSWORD: root
+  SPRING_JPA_HIBERNATE_DDL_AUTO: auto

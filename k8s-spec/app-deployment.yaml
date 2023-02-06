@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: user-service-app
+  name: user-app-dpl
   namespace: k8s-post-service
 spec:
   replicas: 2
@@ -21,25 +21,28 @@ spec:
           env:
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: postgres-config-user           # The ConfigMap this value comes from.
+                secretKeyRef:
+                  name: secrets-dev
                   key: POSTGRES_PASSWORD
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres-service-user:5432/user-service-db?useSSL=false
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
-                configMapKeyRef:
-                  name: postgres-config-user           # The ConfigMap this value comes from.
+                secretKeyRef:
+                  name: secrets-dev
                   key: POSTGRES_USER
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-user           # The ConfigMap this value comes from.
+                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
 
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: post-service-app
+  name: post-app-dpl
   namespace: k8s-post-service
 spec:
   replicas: 2
@@ -59,19 +62,25 @@ spec:
           env:
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
-                configMapKeyRef:
-                  name: postgres-config-post           # The ConfigMap this value comes from.
+                secretKeyRef:
+                  name: secrets-dev
                   key: POSTGRES_PASSWORD
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres-service-post:5432/post-service-db?useSSL=false
             - name: SPRING_DATASOURCE_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: secrets-dev
+                    key: POSTGRES_USER
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+                valueFrom:
+                  configMapKeyRef:
+                    name: postgres-config-post           # The ConfigMap this value comes from.
+                    key: SPRING_JPA_HIBERNATE_DDL_AUTO
+            - name: USER_SERVICE_HOST_URL
               valueFrom:
                 configMapKeyRef:
-                  name: postgres-config-post           # The ConfigMap this value comes from.
-                  key: POSTGRES_USER
-            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-              value: update
-            - name: USER_SERVICE_HOST_URL
-              value: http://user-app-service:8080/
+                  name: app-config-map           # The ConfigMap this value comes from.
+                  key: USER_SERVICE_HOST_URL
 
 ---

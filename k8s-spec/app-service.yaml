@@ -11,7 +11,7 @@ spec:
       targetPort: 8081
       nodePort: 30081
   selector:
-    app: post-service-app
+    app: post-app-dpl
 
 ---
 
@@ -28,4 +28,4 @@ spec:
       targetPort: 8080
       nodePort: 30080
   selector:
-    app: user-service-app
+    app: user-app-dpl
