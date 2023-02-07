@@ -6,4 +6,4 @@ metadata:
   labels:
     app: postgres
 data:
-  USER_SERVICE_HOST_URL: post-service-db
+  USER_SERVICE_HOST_URL: user-app-service
