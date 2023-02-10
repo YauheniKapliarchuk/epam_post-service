@@ -26,27 +26,22 @@ spec:
                   name: postgres-config-post
                   key: POSTGRES_DB
             - name: POSTGRES_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: secrets-dev
-                    key: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: secrets-dev
-                    key: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_PASSWORD
           volumeMounts:
             - mountPath: /var/lib/postgresql/post/data
               name: postgredb-post
-            - mountPath: /docker-entrypoint-initdb.d
-              name: postgresql-initdb
       volumes:
         - name: postgredb-post
           persistentVolumeClaim:
             claimName: postgres-pv-claim-post
-        - name: postgresql-initdb
-            configMap:
-            name: postgres-config-post
 
 ---
 
@@ -78,24 +73,19 @@ spec:
                   name: postgres-config-user
                   key: POSTGRES_DB
             - name: POSTGRES_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: secrets-dev
-                    key: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_USER
             - name: POSTGRES_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: secrets-dev
-                    key: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_PASSWORD
           volumeMounts:
             - mountPath: /var/lib/postgresql/user/data
               name: postgredb-user
-            - mountPath: /docker-entrypoint-initdb.d
-              name: postgresql-initdb
       volumes:
         - name: postgredb-user
           persistentVolumeClaim:
             claimName: postgres-pv-claim-user
-        - name: postgresql-initdb
-            configMap:
-            name: postgres-config-user

@@ -4,10 +4,12 @@
 3. kubectl apply -f ps-service.yaml
 4. kubectl get all -n=k8s-post-service
 5. kubectl exec -it -n=k8s-post-service postgres-dpl-post-7d5dc48b7d-qtrzn  -- psql -h localhost -U root --password -p 5432 post-service-db
-6. kubectl apply -f app-deployment.yaml ---> kubectl logs post-service-app-67c64567c7-sxhzw -n=k8s-post-service
+6. kubectl apply -f app-deployment.yaml ---> kubectl logs user-app-dpl-6994bd65fb-4hm58 -n=k8s-post-service
 7. kubectl apply -f app-service.yaml
 8. kubectl apply -f secrets-dev.yaml
 
 
 CHECK:
-kubectl port-forward postgres-dpl-post-7d5dc48b7d-qtrzn 5545:5432 -n=k8s-post-service
+kubectl port-forward postgres-dpl-post-7f5847f646-99b2w 5545:5432 -n=k8s-post-service
+
+

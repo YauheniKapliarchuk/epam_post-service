@@ -7,18 +7,23 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: user-service-app
+      app: user-app-dpl
   template:
     metadata:
       labels:
-        app: user-service-app
+        app: user-app-dpl
     spec:
       containers:
         - image: evgkapl/user-service:1.0.0
-          name: user-service-app
+          name: user-app-dpl
           ports:
             - containerPort: 8080
           env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_USER
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -26,11 +31,6 @@ spec:
                   key: POSTGRES_PASSWORD
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres-service-user:5432/user-service-db?useSSL=false
-            - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: secrets-dev
-                  key: POSTGRES_USER
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
               valueFrom:
                 configMapKeyRef:
@@ -48,15 +48,15 @@ spec:
   replicas: 2
   selector:
     matchLabels:
-      app: post-service-app
+      app: post-app-dpl
   template:
     metadata:
       labels:
-        app: post-service-app
+        app: post-app-dpl
     spec:
       containers:
         - image: evgkapl/post-service:1.0.0
-          name: post-service-app
+          name: post-app-dpl
           ports:
             - containerPort: 8081
           env:
@@ -68,19 +68,14 @@ spec:
             - name: SPRING_DATASOURCE_URL
               value: jdbc:postgresql://postgres-service-post:5432/post-service-db?useSSL=false
             - name: SPRING_DATASOURCE_USERNAME
-                valueFrom:
-                  secretKeyRef:
-                    name: secrets-dev
-                    key: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_USER
             - name: SPRING_JPA_HIBERNATE_DDL_AUTO
-                valueFrom:
-                  configMapKeyRef:
-                    name: postgres-config-post           # The ConfigMap this value comes from.
-                    key: SPRING_JPA_HIBERNATE_DDL_AUTO
-            - name: USER_SERVICE_HOST_URL
               valueFrom:
                 configMapKeyRef:
-                  name: app-config-map           # The ConfigMap this value comes from.
-                  key: USER_SERVICE_HOST_URL
+                  name: postgres-config-user           # The ConfigMap this value comes from.
+                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
 
 ---
