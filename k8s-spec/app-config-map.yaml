@@ -6,4 +6,4 @@ metadata:
   labels:
     app: postgres
 data:
-  USER_SERVICE_HOST_URL: user-app-service
+  USER_SERVICE_HOST_URL: "http://user-app-service:8080/"

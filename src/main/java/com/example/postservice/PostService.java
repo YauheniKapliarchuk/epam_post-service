@@ -25,6 +25,7 @@ public class PostService {
         post.setAuthorId(postDto.getAuthorId());
         post.setText(postDto.getText());
         post.setPostedAt(LocalDateTime.now());
+        post.setTopic(postDto.getTopic());
 
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<User> entity = new HttpEntity<>(new User());
@@ -61,6 +62,7 @@ public class PostService {
         currentPost.ifPresent(post -> {
             post.setText(postDto.getText());
             post.setPostedAt(LocalDateTime.now());
+            post.setTopic(post.getTopic());
         });
         return postRepository.save(currentPost.get());
     }

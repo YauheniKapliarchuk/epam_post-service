@@ -36,6 +36,20 @@ spec:
                 configMapKeyRef:
                   name: postgres-config-user           # The ConfigMap this value comes from.
                   key: SPRING_JPA_HIBERNATE_DDL_AUTO
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+              httpHeaders: # optional
+                - name: Custom-Header
+                  value: Awesome
+            initialDelaySeconds: 4
+            periodSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
 
 ---
 
@@ -77,5 +91,24 @@ spec:
                 configMapKeyRef:
                   name: postgres-config-user           # The ConfigMap this value comes from.
                   key: SPRING_JPA_HIBERNATE_DDL_AUTO
+            - name: USER_SERVICE_HOST_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: USER_SERVICE_HOST_URL
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+              httpHeaders: # optional
+              - name: Custom-Header
+                value: Awesome
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
 
 ---

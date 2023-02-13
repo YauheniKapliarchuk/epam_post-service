@@ -9,4 +9,5 @@ public class PostDto {
 
     private Long authorId;
     private String text;
+    private String topic;
 }

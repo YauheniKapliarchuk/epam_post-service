@@ -26,4 +26,7 @@ public class Post {
 
     @Column(name = "postedAt")
     private LocalDateTime postedAt;
+
+    @Column(name = "topic")
+    private String topic;
 }

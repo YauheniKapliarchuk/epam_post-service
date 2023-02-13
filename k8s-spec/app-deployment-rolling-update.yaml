@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-app-dpl
+  namespace: k8s-post-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: post-app-dpl
+  template:
+    metadata:
+      labels:
+        app: post-app-dpl
+    spec:
+      containers:
+        - image: evgkapl/post-service:1.0.1
+          name: post-app-dpl
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_PASSWORD
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-service-post:5432/post-service-db?useSSL=false
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_USER
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-user           # The ConfigMap this value comes from.
+                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
+            - name: USER_SERVICE_HOST_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config-map
+                  key: USER_SERVICE_HOST_URL
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+              httpHeaders: # optional
+                - name: Custom-Header
+                  value: Awesome
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          readinessProbe:
+            tcpSocket:
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
