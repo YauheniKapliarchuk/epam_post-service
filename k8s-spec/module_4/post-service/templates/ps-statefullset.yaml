@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-dpl-post  # Sets Deployment name
+  namespace: k8s-post-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-post-db-pod
+  template:
+    metadata:
+      labels:
+        app: postgres-post-db-pod
+    spec:
+      containers:
+        - name: postgres-post-db
+          image: postgres:15.1 # Sets Image
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432  # Exposes container port
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-post
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_PASSWORD
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/post/data
+              name: postgredb-post
+      volumes:
+        - name: postgredb-post
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim-post
+
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-dpl-user  # Sets Deployment name
+  namespace: k8s-post-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-user-db-pod
+  template:
+    metadata:
+      labels:
+        app: postgres-user-db-pod
+    spec:
+      containers:
+        - name: postgres-user-db-pod
+          image: postgres:15.1 # Sets Image
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5432  # Exposes container port
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: postgres-config-user
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets-dev
+                  key: POSTGRES_PASSWORD
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/user/data
+              name: postgredb-user
+      volumes:
+        - name: postgredb-user
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim-user
